@@ -55,6 +55,24 @@ export const tr = {
     accessDenied: 'Google izni verilmedi. Verilerinizi görebilmemiz için izin vermeniz gerekiyor.',
   },
 
+  /**
+   * Durum özeti cümleleri. Sayı biçimlendirmesi çağıran tarafta yapılır;
+   * buraya hazır metin gelir.
+   */
+  insights: {
+    title: 'Bugün dikkat etmeniz gerekenler',
+    empty: 'Şu an dikkatinizi gerektiren bir durum yok.',
+    needsReconnect: (site: string) => `${site} için Google bağlantınızı yenilemeniz gerekiyor.`,
+    staleData: (site: string, days: string) => `${site} için ${days} gündür yeni veri gelmiyor.`,
+    clicksUp: (site: string, change: string) => `${site} tıklamaları ${change} arttı.`,
+    clicksDown: (site: string, change: string) => `${site} tıklamaları ${change} azaldı.`,
+    rankUp: (site: string, from: string, to: string) =>
+      `${site} Google sıralaması ${from}'ten ${to}'e yükseldi.`,
+    rankDown: (site: string, from: string, to: string) =>
+      `${site} Google sıralaması ${from}'ten ${to}'e geriledi.`,
+    queryBreakout: (query: string) => `"${query}" kelimesi ilk 3 sıraya yükseldi.`,
+  },
+
   status: {
     fresh: 'Güncel',
     syncing: 'Veri alınıyor',
