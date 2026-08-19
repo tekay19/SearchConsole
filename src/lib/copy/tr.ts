@@ -66,6 +66,15 @@ export const tr = {
     },
   },
 
+  delta: {
+    increased: 'Geçen döneme göre arttı',
+    decreased: 'Geçen döneme göre azaldı',
+    improved: 'Geçen döneme göre iyileşti',
+    worsened: 'Geçen döneme göre geriledi',
+    unchanged: 'Geçen döneme göre değişmedi',
+    noComparison: 'Karşılaştırma için yeterli geçmiş veri yok',
+  },
+
   /** Bir kez burada tanımlanır; sonraki bölümler yalnızca satır ekler. */
   common: {
     noData: '—',

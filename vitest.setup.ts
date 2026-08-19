@@ -1,4 +1,13 @@
+import { cleanup } from '@testing-library/react'
+import { afterEach } from 'vitest'
 import '@testing-library/jest-dom/vitest'
+
+/**
+ * Testing Library kendi temizliğini yalnızca Vitest globalleri açıkken
+ * kurar; bizde kapalı olduğu için elle bağlıyoruz. Olmazsa render'lar
+ * birikir ve "birden fazla öğe bulundu" hataları çıkar.
+ */
+afterEach(cleanup)
 
 /**
  * Testler eksiksiz ama açıkça sahte bir ortamla çalışır.
