@@ -1,5 +1,5 @@
 import { Worker } from 'bullmq'
-import type { SiteJob } from '@/server/sync/jobs'
+import type { QueueJob } from '@/server/sync/jobs'
 import {
   GOOGLE_REQUESTS_PER_SECOND,
   SITE_QUEUE,
@@ -9,6 +9,8 @@ import {
 } from '@/server/sync/queue'
 import { runDailySync } from '@/server/sync/daily-sync'
 import { runHistorySync } from '@/server/sync/history-sync'
+import { runMaintenance } from '@/server/sync/maintenance'
+import { enqueueAllDailySyncs, registerSchedules } from '@/server/sync/scheduler'
 
 /**
  * Veriyi toplayan ayrı süreç.
@@ -17,14 +19,26 @@ import { runHistorySync } from '@/server/sync/history-sync'
  * sürebilir ve bunu istek içinde yapmak hem zaman aşımına uğrar hem de
  * kullanıcıyı bekletir.
  */
-const worker = new Worker<SiteJob>(
+const worker = new Worker<QueueJob>(
   SITE_QUEUE,
   async (job) => {
     switch (job.data.kind) {
       case 'daily':
         return runDailySync(job.data)
+
       case 'history':
         return runHistorySync(job.data)
+
+      case 'fanout': {
+        const count = await enqueueAllDailySyncs()
+        console.log(`[worker] gunluk tur: ${count} site kuyruga eklendi`)
+        return
+      }
+
+      case 'maintenance':
+        await runMaintenance()
+        console.log('[worker] bakim tamamlandi')
+        return
     }
   },
   {
@@ -43,6 +57,8 @@ worker.on('failed', (job, error) => {
 worker.on('ready', () => {
   console.log('[worker] hazir, is bekleniyor')
 })
+
+await registerSchedules()
 
 async function shutdown(signal: string): Promise<void> {
   console.log(`[worker] ${signal} alindi, kapaniyor`)

@@ -1,7 +1,7 @@
 import { Queue } from 'bullmq'
 import IORedis from 'ioredis'
 import { env } from '@/server/env'
-import { jobIdFor, type SiteJob } from './jobs'
+import { jobIdFor, type QueueJob, type SiteJob } from './jobs'
 
 export const SITE_QUEUE = 'site-jobs'
 
@@ -17,7 +17,7 @@ export const WORKER_CONCURRENCY = 5
 
 const globalForQueue = globalThis as unknown as {
   __spRedis?: IORedis
-  __spQueue?: Queue<SiteJob>
+  __spQueue?: Queue<QueueJob>
 }
 
 /**
@@ -28,7 +28,7 @@ export const connection = (globalForQueue.__spRedis ??= new IORedis(env.REDIS_UR
   maxRetriesPerRequest: null,
 }))
 
-export const siteQueue = (globalForQueue.__spQueue ??= new Queue<SiteJob>(SITE_QUEUE, {
+export const siteQueue = (globalForQueue.__spQueue ??= new Queue<QueueJob>(SITE_QUEUE, {
   connection,
   defaultJobOptions: {
     attempts: 5,

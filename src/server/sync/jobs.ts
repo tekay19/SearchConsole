@@ -3,6 +3,14 @@ export type SiteJob =
   | { kind: 'history'; siteId: string; from: string; to: string }
 
 /**
+ * Zamanlayıcının açtığı işler. Bunların kimliğini BullMQ üretir, bu yüzden
+ * jobIdFor kapsamı dışındalar.
+ */
+export type ScheduledJob = { kind: 'fanout' } | { kind: 'maintenance' }
+
+export type QueueJob = SiteJob | ScheduledJob
+
+/**
  * İşin kimliği içeriğinden türetilir.
  *
  * Kuyruk aynı kimlikli bir işi ikinci kez eklemez. Kullanıcı "Verileri
