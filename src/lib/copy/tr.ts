@@ -57,6 +57,19 @@ export const tr = {
       'Search Console’da doğrulanmış bir siteniz olması gerekiyor. Doğruladıktan sonra bu sayfayı yenileyin.',
     selectAtLeastOne: 'Devam etmek için en az bir web sitesi seçin.',
 
+    preparingTitle: (site: string) => `${site} hazırlanıyor...`,
+    preparingAll: 'Web siteleriniz hazırlanıyor...',
+    preparingNote: 'Bu birkaç dakika sürebilir. Sayfayı kapatabilirsiniz, hazırlık arka planda devam eder.',
+    steps: {
+      connecting: 'Google bağlantısı kontrol edildi',
+      discovering: 'Web sitesi bulundu',
+      fetchingHistory: 'Geçmiş performans verileri alındı',
+      ready: 'Dashboard hazır',
+    },
+    allReady: 'Web siteleriniz hazır.',
+    goToDashboard: "Dashboard'a Git",
+    technicalDetails: 'Teknik detayları göster',
+
     ladderCaption: 'Sizin siteniz',
     headline: 'Google’da kaçıncı sıradasınız?',
     subhead:

@@ -14,7 +14,17 @@ export async function addSelectedSites(formData: FormData): Promise<void> {
   const session = await requireSession()
   const properties = formData.getAll('site').map(String)
 
-  await onboardingService.addSites(session.userId, session.connectionId, properties)
+  const added = await onboardingService.addSites(session.userId, session.connectionId, properties)
 
-  redirect('/genel-bakis')
+  // Hiçbir şey eklenmediyse hazırlık ekranını göstermenin anlamı yok.
+  if (added.length === 0) redirect('/genel-bakis')
+
+  const query = new URLSearchParams(added.map((siteId) => ['site', siteId]))
+  redirect(`/siteler/hazirlaniyor?${query.toString()}`)
+}
+
+/** Hazırlık ekranının iki saniyede bir çağırdığı yoklama. */
+export async function fetchPreparationProgress(siteIds: string[]) {
+  const session = await requireSession()
+  return onboardingService.preparationProgress(session.userId, siteIds)
 }

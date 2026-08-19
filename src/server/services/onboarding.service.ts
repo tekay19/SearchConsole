@@ -1,3 +1,4 @@
+import type { PreparationStage } from '@/server/db/schema'
 import { createGscClient } from '@/server/gsc/access-token'
 import { sitesRepo } from '@/server/repositories/sites.repo'
 import { startHistorySync } from '@/server/sync/history-sync'
@@ -6,6 +7,12 @@ export type DiscoveredSite = {
   property: string
   displayName: string
   alreadyAdded: boolean
+}
+
+export type PreparationProgress = {
+  siteId: string
+  displayName: string
+  stage: PreparationStage
 }
 
 /**
@@ -77,5 +84,20 @@ export const onboardingService = {
     }
 
     return inserted.map((site) => site.id)
+  },
+
+  /**
+   * "Hazırlanıyor" ekranının yokladığı ilerleme.
+   *
+   * Kullanıcının kendi siteleriyle sınırlı: kimlikler adres çubuğundan
+   * geliyor ve başkasının sitesinin durumunu göstermemeli.
+   */
+  async preparationProgress(userId: string, siteIds: string[]): Promise<PreparationProgress[]> {
+    const owned = await sitesRepo.listForUser(userId)
+    const wanted = new Set(siteIds)
+
+    return owned
+      .filter((site) => wanted.has(site.id))
+      .map((site) => ({ siteId: site.id, displayName: site.displayName, stage: site.stage }))
   },
 }
