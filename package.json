@@ -9,6 +9,7 @@
     "start": "next start",
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
+    "verify": "pnpm typecheck && pnpm lint && pnpm test",
     "test": "vitest run",
     "test:watch": "vitest",
     "worker": "tsx --env-file=.env.local src/worker/index.ts",

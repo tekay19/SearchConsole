@@ -78,9 +78,14 @@ export function PerformanceChart({ points }: { points: ChartPoint[] }) {
               />
               <Tooltip
                 cursor={{ stroke: 'var(--rule)' }}
-                labelFormatter={(value: string) => fullDate.format(new Date(value))}
-                formatter={(value: number) => [
-                  formatCount(value),
+                /**
+                 * Recharts ipucu geri çağrılarına gevşek tipler geçiriyor
+                 * (ReactNode / ValueType). Daraltmayı burada yapıyoruz ki
+                 * biçimleyicilere her zaman gerçek bir sayı ve tarih gitsin.
+                 */
+                labelFormatter={(label) => (typeof label === 'string' ? fullDate.format(new Date(label)) : '')}
+                formatter={(value) => [
+                  formatCount(typeof value === 'number' ? value : 0),
                   SERIES.find((entry) => entry.key === series)!.label,
                 ]}
                 contentStyle={{
