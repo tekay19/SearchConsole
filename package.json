@@ -12,6 +12,7 @@
     "test:watch": "vitest",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
+    "db:partitions": "tsx --env-file=.env.local scripts/ensure-partitions.mts",
     "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
