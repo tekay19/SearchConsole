@@ -3,6 +3,12 @@ import type { Totals } from '@/lib/metrics/aggregate'
 import { compareMetric, type Trend } from '@/lib/metrics/trend'
 import { metricsReadRepo, type DailyPoint, type SiteScope } from '@/server/repositories/metrics-read.repo'
 
+/**
+ * Kapsam tipi servis yüzeyinden dışa açılır. Arayüz repository'ye
+ * bakamaz (katman kuralı) ama bu tipe ihtiyacı var.
+ */
+export type { DailyPoint, SiteScope }
+
 export type Overview = {
   totals: Totals
   previous: Totals

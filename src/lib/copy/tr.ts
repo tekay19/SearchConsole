@@ -78,6 +78,30 @@ export const tr = {
     },
   },
 
+  dimensions: {
+    queriesHeading: 'İnsanlar sizi hangi kelimelerle buluyor?',
+    pagesHeading: "Google'dan en çok ziyaret alan sayfalar",
+    countriesHeading: 'Ziyaretçileriniz nereden geliyor?',
+    devicesHeading: 'Ziyaretçiler hangi cihazları kullanıyor?',
+    columns: {
+      term: 'Arama',
+      page: 'Sayfa',
+      views: "Google'da Görünme",
+      clicks: 'Tıklama',
+      rank: 'Sıra',
+      change: 'Değişim',
+      share: 'Pay',
+    },
+    empty: 'Bu dönem için gösterilecek veri yok.',
+    seeAll: 'Tümünü gör',
+  },
+
+  devices: {
+    mobile: 'Mobil',
+    desktop: 'Bilgisayar',
+    tablet: 'Tablet',
+  },
+
   sites: {
     addAction: 'Site Ekle',
     searchPlaceholder: 'Web sitesi arayın',
