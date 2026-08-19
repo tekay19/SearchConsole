@@ -104,6 +104,28 @@ export const sitesRepo = {
     return inserted
   },
 
+  /**
+   * Siteyi takipten çıkarır.
+   *
+   * `daily_totals`, `country_daily` ve `device_daily` yabancı anahtarla
+   * kendiliğinden siliniyor. Bölümlenmiş iki tabloda yabancı anahtar yok
+   * (her satır yazımını yavaşlatırdı), o yüzden onları elle siliyoruz —
+   * bakım işi de artıkları ayrıca tarıyor.
+   */
+  async remove(userId: string, siteId: string): Promise<boolean> {
+    const deleted = await db
+      .delete(sites)
+      .where(and(eq(sites.id, siteId), eq(sites.userId, userId)))
+      .returning({ id: sites.id })
+
+    if (deleted.length === 0) return false
+
+    await db.execute(sql`DELETE FROM query_daily WHERE site_id = ${siteId}`)
+    await db.execute(sql`DELETE FROM page_daily  WHERE site_id = ${siteId}`)
+
+    return true
+  },
+
   async setStage(siteId: string, stage: PreparationStage): Promise<void> {
     await db.update(siteSyncState).set({ stage }).where(eq(siteSyncState.siteId, siteId))
   },

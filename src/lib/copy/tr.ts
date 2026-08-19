@@ -91,6 +91,37 @@ export const tr = {
     },
   },
 
+  settings: {
+    accountHeading: 'Hesabınız',
+    connectionHeading: 'Google bağlantınız',
+    connectedAs: 'Bağlı hesap',
+    connectedSince: 'Bağlandığı tarih',
+    connectionActive: 'Bağlantı çalışıyor',
+    connectionBroken: 'Bağlantı yenilenmeli',
+    noConnection: 'Henüz bir Google hesabı bağlanmamış.',
+    reconnect: 'Bağlantıyı Yenile',
+    sitesHeading: 'Takip edilen web siteleri',
+    removeSite: 'Takibi Bırak',
+    removeConfirm: 'Bu web sitesinin verileri silinecek. Devam edilsin mi?',
+    noSites: 'Henüz takip ettiğiniz bir web sitesi yok.',
+    dangerNote: 'Takibi bıraktığınız sitenin geçmiş verileri silinir. Yeniden eklerseniz veriler baştan alınır.',
+    signOutHeading: 'Oturum',
+    signOutNote: 'Bu cihazdaki oturumunuz kapatılır. Verileriniz silinmez.',
+  },
+
+  reports: {
+    heading: 'Verilerinizi indirin',
+    intro:
+      'Seçili web sitesi ve tarih aralığı için hazırlanmış tabloları indirip Excel veya Google E-Tablolar’da açabilirsiniz.',
+    downloadQueries: 'Arama kelimelerini indir',
+    downloadPages: 'Sayfaları indir',
+    downloadCountries: 'Ülkeleri indir',
+    downloadDevices: 'Cihazları indir',
+    downloadDaily: 'Günlük özeti indir',
+    scopeAllSites: 'Tüm siteler',
+    currentScope: 'İndirilecek:',
+  },
+
   dimensions: {
     queriesHeading: 'İnsanlar sizi hangi kelimelerle buluyor?',
     pagesHeading: "Google'dan en çok ziyaret alan sayfalar",

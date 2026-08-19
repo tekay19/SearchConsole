@@ -20,6 +20,30 @@ function calendarDaysBetween(earlier: Date, later: Date): number {
   return Math.round((toUtcMidnight(later) - toUtcMidnight(earlier)) / 86_400_000)
 }
 
+const isoDay = new Intl.DateTimeFormat(LOCALE, { day: 'numeric', month: 'long', timeZone: 'UTC' })
+const isoDayYear = new Intl.DateTimeFormat(LOCALE, {
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric',
+  timeZone: 'UTC',
+})
+
+/**
+ * Dönem aralığı: "20 Temmuz — 16 Ağustos 2026".
+ *
+ * Yıl yalnızca sonda; iki tarih aynı yıldaysa başta tekrar etmesi
+ * gereksiz gürültü. Tarihler gün bazlı olduğu için UTC'de biçimlenir —
+ * yerel saate çevirmek günü kaydırırdı.
+ */
+export function formatPeriodRange(from: string, to: string): string {
+  const start = new Date(`${from}T00:00:00Z`)
+  const end = new Date(`${to}T00:00:00Z`)
+
+  const sameYear = start.getUTCFullYear() === end.getUTCFullYear()
+
+  return `${sameYear ? isoDay.format(start) : isoDayYear.format(start)} — ${isoDayYear.format(end)}`
+}
+
 export function formatLastUpdate(at: Date, now: Date): string {
   const days = calendarDaysBetween(at, now)
   if (days === 0) return `Bugün ${clock.format(at)}`
