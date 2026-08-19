@@ -45,6 +45,18 @@ export const tr = {
   },
 
   onboarding: {
+    connectedTitle: 'Google hesabınız bağlandı',
+    selectTitle: 'Takip etmek istediğiniz web sitelerini seçin.',
+    foundCount: (count: string) => `${count} web sitesi bulundu.`,
+    alreadyAdded: 'Zaten takip ediliyor',
+    addAction: 'Seçilen Siteleri Ekle',
+    adding: 'Ekleniyor...',
+    skipAction: 'Şimdilik geç',
+    nothingFound: 'Google hesabınızda takip edebileceğimiz bir web sitesi bulamadık.',
+    nothingFoundHelp:
+      'Search Console’da doğrulanmış bir siteniz olması gerekiyor. Doğruladıktan sonra bu sayfayı yenileyin.',
+    selectAtLeastOne: 'Devam etmek için en az bir web sitesi seçin.',
+
     ladderCaption: 'Sizin siteniz',
     headline: 'Google’da kaçıncı sıradasınız?',
     subhead:
