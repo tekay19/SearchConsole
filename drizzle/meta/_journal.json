@@ -15,6 +15,13 @@
       "when": 1787143656834,
       "tag": "0001_heavy_dark_phoenix",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1787153205003,
+      "tag": "0002_striped_lord_tyger",
+      "breakpoints": true
     }
   ]
 }

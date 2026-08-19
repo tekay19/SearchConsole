@@ -44,7 +44,7 @@ export function StatusBadge({
 
       {view.action === 'reconnect' ? (
         <Link
-          href="/baglan"
+          href="/api/google/connect"
           className="rounded-md bg-cobalt-soft px-2 py-1 text-xs font-medium text-cobalt hover:underline"
         >
           {copy.status.reconnectAction}

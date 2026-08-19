@@ -2,7 +2,6 @@
 
 import { revalidatePath } from 'next/cache'
 import { requireSession, signOut } from '@/server/auth'
-import { startAccountLink } from '@/server/auth/flows'
 import { settingsService } from '@/server/services/settings.service'
 
 export async function removeTrackedSite(formData: FormData): Promise<void> {
@@ -16,11 +15,6 @@ export async function removeTrackedSite(formData: FormData): Promise<void> {
 }
 
 export async function signOutAction(): Promise<void> {
-  await signOut({ redirectTo: '/baglan' })
+  await signOut({ redirectTo: '/giris' })
 }
 
-/** Yeni bir Google hesabını mevcut kullanıcıya bağlar. */
-export async function addGoogleAccount(): Promise<void> {
-  const session = await requireSession()
-  await startAccountLink(session.userId)
-}

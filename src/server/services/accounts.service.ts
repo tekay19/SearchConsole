@@ -1,3 +1,6 @@
+import { encryptSecret } from '@/server/auth/crypto'
+import type { GoogleTokens } from '@/server/gsc/oauth'
+import { readGoogleIdentity } from '@/server/gsc/oauth'
 import { connectionsRepo } from '@/server/repositories/connections.repo'
 
 export type AccountOption = {
@@ -9,6 +12,28 @@ export type AccountOption = {
 }
 
 export const accountsService = {
+  /**
+   * Google'dan dönen jetonları kullanıcının hesabına bağlar.
+   *
+   * Jetonlar şifrelenerek veritabanına yazılır: veriyi toplayan işçi
+   * sürecin tarayıcı oturumu yok, jetona yalnızca buradan ulaşabiliyor.
+   */
+  async connectFromGoogle(userId: string, tokens: GoogleTokens): Promise<{ ok: boolean }> {
+    const identity = readGoogleIdentity(tokens.idToken)
+    if (!identity) return { ok: false }
+
+    await connectionsRepo.upsertFromGoogle({
+      userId,
+      googleSub: identity.sub,
+      googleEmail: identity.email,
+      accessTokenEncrypted: encryptSecret(tokens.accessToken),
+      refreshTokenEncrypted: tokens.refreshToken ? encryptSecret(tokens.refreshToken) : null,
+      accessTokenExpiresAt: tokens.expiresAt,
+    })
+
+    return { ok: true }
+  },
+
   /**
    * Kullanıcının bağladığı Google hesapları.
    *

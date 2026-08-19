@@ -3,8 +3,6 @@ import Link from 'next/link'
 import { AccountPicker } from '@/components/app-shell/account-picker'
 import { Sidebar } from '@/components/app-shell/sidebar'
 import { SitePicker } from '@/components/filters/site-picker'
-import { AddAccountButton } from '@/features/settings/add-account-button'
-import { addGoogleAccount } from '@/features/settings/actions'
 import { copy } from '@/lib/copy'
 import { requireSession } from '@/server/auth'
 import { accountsService } from '@/server/services/accounts.service'
@@ -39,7 +37,9 @@ export default async function AppLayout({ children }: { children: React.ReactNod
         </div>
 
         <div className="mt-2">
-          <AddAccountButton action={addGoogleAccount} className="text-xs font-medium text-cobalt hover:underline" />
+          <Link href="/api/google/connect" className="text-xs font-medium text-cobalt hover:underline">
+            {copy.accounts.addAccount}
+          </Link>
         </div>
 
         <div className="mt-6">

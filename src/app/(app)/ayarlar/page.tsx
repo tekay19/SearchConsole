@@ -1,7 +1,6 @@
 import Link from 'next/link'
 import { PageHeader } from '@/components/app-shell/page-header'
-import { addGoogleAccount, removeTrackedSite, signOutAction } from '@/features/settings/actions'
-import { AddAccountButton } from '@/features/settings/add-account-button'
+import { removeTrackedSite, signOutAction } from '@/features/settings/actions'
 import { StatusBadge } from '@/features/sites/status-badge'
 import { copy } from '@/lib/copy'
 import { formatCount } from '@/lib/format/number'
@@ -56,7 +55,7 @@ export default async function SettingsPage() {
                     <span className="text-xs font-medium text-rise">{copy.settings.connectionActive}</span>
                   ) : (
                     <Link
-                      href="/baglan"
+                      href="/api/google/connect"
                       className="rounded-lg bg-cobalt-soft px-3 py-1.5 text-xs font-medium text-cobalt hover:underline"
                     >
                       {copy.settings.reconnect}
@@ -68,7 +67,9 @@ export default async function SettingsPage() {
           )}
 
           <div className="mt-4 border-t border-rule pt-4">
-            <AddAccountButton action={addGoogleAccount} />
+            <Link href="/api/google/connect" className="text-sm font-medium text-cobalt underline-offset-4 hover:underline">
+              {copy.accounts.addAccount}
+            </Link>
           </div>
         </Card>
 

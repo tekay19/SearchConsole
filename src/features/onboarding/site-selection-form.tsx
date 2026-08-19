@@ -26,12 +26,20 @@ function SubmitButton({ disabled }: { disabled: boolean }) {
  * Zaten eklenmiş siteler listede kalır ama seçilemez — kullanıcının
  * "bunu eklemiş miydim" diye düşünmesine gerek kalmaz.
  */
-export function SiteSelectionForm({ sites }: { sites: DiscoveredSite[] }) {
+export function SiteSelectionForm({
+  sites,
+  accountId,
+}: {
+  sites: DiscoveredSite[]
+  accountId: string
+}) {
   const selectable = sites.filter((site) => !site.alreadyAdded)
   const [selected, setSelected] = useState<string[]>(() => selectable.map((site) => site.property))
 
   return (
     <form action={addSelectedSites}>
+      {/* Siteler hangi Google hesabından çekildiyse ona bağlanmalı. */}
+      <input type="hidden" name="hesap" value={accountId} />
       <ul className="divide-y divide-rule overflow-hidden rounded-(--radius) ring-1 ring-rule">
         {sites.map((site) => (
           <li key={site.property}>

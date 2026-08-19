@@ -25,16 +25,15 @@ export default async function SelectSitesPage({
    * Hangi Google hesabının siteleri listelenecek?
    *
    * Adres çubuğundan gelen kimlik doğrulanır; kullanıcının olmayan bir
-   * hesap istenirse en güncel kendi hesabına düşer. Oturumdaki
-   * `connectionId` en son bağlanan hesaptır ve hesap ekleme akışından
-   * hemen sonra doğru olan da odur.
+   * hesap istenirse en güncel kendi hesabına düşer.
    */
   const account = await accountsService.resolveForUser(
     session.userId,
-    typeof hesap === 'string' ? hesap : session.connectionId,
+    typeof hesap === 'string' ? hesap : undefined,
   )
 
-  if (!account) redirect('/baglan')
+  // Hic Google hesabi bagli degilse once onu baglatmali.
+  if (!account) redirect('/api/google/connect')
 
   const sites = await onboardingService.discoverSites(session.userId, account.id)
 
@@ -64,7 +63,7 @@ export default async function SelectSitesPage({
             {copy.onboarding.foundCount(formatCount(sites.length))}
           </p>
 
-          <SiteSelectionForm sites={sites} />
+          <SiteSelectionForm sites={sites} accountId={account.id} />
         </>
       )}
 

@@ -5,16 +5,28 @@ import { users } from '@/server/db/schema'
 export type UserRow = typeof users.$inferSelect
 
 export const usersRepo = {
-  /** Google ile ilk girişte kullanıcıyı açar, sonraki girişlerde adını tazeler. */
-  async upsertByEmail(input: { email: string; name: string | null }): Promise<{ id: string }> {
+  /**
+   * Yeni kullanıcı açar. E-posta zaten kayıtlıysa null döner —
+   * çağıran taraf bunu "bu adres kullanımda" mesajına çevirir.
+   */
+  async create(input: { email: string; name: string | null; passwordHash: string }): Promise<{ id: string } | null> {
     const [row] = await db
       .insert(users)
-      .values(input)
-      .onConflictDoUpdate({ target: users.email, set: { name: input.name } })
+      .values({ ...input, email: input.email.trim().toLowerCase() })
+      .onConflictDoNothing({ target: users.email })
       .returning({ id: users.id })
 
-    if (!row) throw new Error('Kullanıcı kaydedilemedi.')
-    return row
+    return row ?? null
+  },
+
+  async findByEmail(email: string): Promise<UserRow | null> {
+    const [row] = await db
+      .select()
+      .from(users)
+      .where(eq(users.email, email.trim().toLowerCase()))
+      .limit(1)
+
+    return row ?? null
   },
 
   async findById(id: string): Promise<UserRow | null> {

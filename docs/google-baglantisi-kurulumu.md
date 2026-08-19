@@ -47,12 +47,12 @@ Bu adım atlanırsa site listesi çekilirken izin hatası alınır.
 - **Authorized redirect URIs** → **ADD URI**:
 
   ```
-  http://localhost:3000/api/auth/callback/google
+  http://localhost:3000/api/google/callback
   ```
 
   Üç ayrıntı önemli: `https` değil **`http`** (Google `localhost` için bu
   istisnayı tanır), sonunda **eğik çizgi yok**, ve yol **birebir**
-  `/api/auth/callback/google`. Bir harf farklı olursa girişte
+  `/api/google/callback`. Bir harf farklı olursa girişte
   `redirect_uri_mismatch` hatası alınır.
 
 **Create** dedikten sonra açılan kutuda **Client ID** ve **Client secret**
@@ -90,7 +90,7 @@ değil. Listeye ekleyip tekrar dene.
 ## Üretime çıkarken
 
 Aynı istemciye üretim adresini de eklemek yerine ayrı bir OAuth istemcisi
-oluştur ve yönlendirme adresini `https://<alan-adı>/api/auth/callback/google`
+oluştur ve yönlendirme adresini `https://<alan-adı>/api/google/callback`
 olarak ver. İzin ekranını "In production" durumuna almak Google
 doğrulamasından geçmeyi gerektirir; `webmasters.readonly` hassas kapsam
 sayıldığı için bu süreç birkaç hafta sürebilir.

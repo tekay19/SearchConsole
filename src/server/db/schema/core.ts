@@ -19,10 +19,19 @@ export const preparationStage = pgEnum('preparation_stage', [
 export type SiteStatus = (typeof siteStatus.enumValues)[number]
 export type PreparationStage = (typeof preparationStage.enumValues)[number]
 
+/**
+ * Kimlik Google'dan bağımsızdır.
+ *
+ * Kullanıcı e-posta ve parolayla giriyor; Google hesapları ona bağlanan
+ * veri kaynakları. Kimlik Google'a bağlı olsaydı ikinci bir hesap eklemek
+ * kimlik değiştirmek anlamına gelir ve oturumu düşürürdü.
+ */
 export const users = pgTable('users', {
   id: uuid('id').primaryKey().defaultRandom(),
   email: text('email').notNull().unique(),
   name: text('name'),
+  /** scrypt özeti. Google ile açılmış eski kayıtlarda boş olabilir. */
+  passwordHash: text('password_hash'),
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
 })
 

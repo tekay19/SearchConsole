@@ -16,6 +16,7 @@
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:partitions": "tsx --env-file=.env.local scripts/ensure-partitions.mts",
+    "set-password": "tsx --env-file=.env.local scripts/set-password.mts",
     "db:studio": "drizzle-kit studio"
   },
   "dependencies": {

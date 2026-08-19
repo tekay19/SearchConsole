@@ -44,6 +44,26 @@ export const tr = {
     },
   },
 
+  auth: {
+    signInTitle: 'Giriş yapın',
+    signUpTitle: 'Hesap oluşturun',
+    emailLabel: 'E-posta',
+    passwordLabel: 'Parola',
+    nameLabel: 'Adınız',
+    nameOptional: 'İsteğe bağlı',
+    signInAction: 'Giriş Yap',
+    signUpAction: 'Hesap Oluştur',
+    working: 'Bekleyin...',
+    noAccount: 'Hesabınız yok mu?',
+    goSignUp: 'Hesap oluşturun',
+    haveAccount: 'Zaten hesabınız var mı?',
+    goSignIn: 'Giriş yapın',
+    wrongCredentials: 'E-posta veya parola hatalı.',
+    emailTaken: 'Bu e-posta adresi zaten kayıtlı.',
+    emailInvalid: 'Geçerli bir e-posta adresi yazın.',
+    signUpNote: 'Hesabınızı oluşturduktan sonra Google Search Console hesaplarınızı bağlayacaksınız.',
+  },
+
   onboarding: {
     connectedTitle: 'Google hesabınız bağlandı',
     selectTitle: 'Takip etmek istediğiniz web sitelerini seçin.',
