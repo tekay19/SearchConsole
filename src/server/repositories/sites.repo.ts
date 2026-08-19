@@ -135,15 +135,30 @@ export const sitesRepo = {
   },
 
   /**
-   * Bir geçmiş dilimi tamamlandı. En eski tarihi geriye doğru genişletir;
-   * dilimler sırasız bitebileceği için her zaman en küçüğü tutuyoruz.
+   * Bir geçmiş dilimi tamamlandı.
+   *
+   * `historyStartDate` geriye doğru genişler — dilimler sırasız bitebileceği
+   * için her zaman en küçüğü tutuyoruz.
+   *
+   * Site, 16 ayın tamamı inince değil **en yeni dilim inince** hazır sayılır.
+   * Kullanıcının verisini görmek için bir buçuk yıllık geçmişi beklemesi
+   * gereksiz; kalan aylar arkada dolarken panel çalışır durumda olur.
+   * `greatest` sayesinde eski bir dilim geç bitse de son tarihi geri almaz.
    */
-  async completeHistoryChunk(siteId: string, from: string): Promise<void> {
+  async completeHistoryChunk(siteId: string, from: string, to: string): Promise<void> {
     await db
       .update(siteSyncState)
       .set({
         historyStartDate: sql`least(coalesce(${siteSyncState.historyStartDate}, ${from}), ${from})`,
+        lastSyncedDate: sql`greatest(coalesce(${siteSyncState.lastSyncedDate}, ${to}), ${to})`,
+        lastSuccessAt: new Date(),
+        lastAttemptAt: new Date(),
+        consecutiveFailures: 0,
+        lastErrorCode: null,
+        stage: 'ready',
       })
       .where(eq(siteSyncState.siteId, siteId))
+
+    await db.update(sites).set({ status: 'fresh' }).where(eq(sites.id, siteId))
   },
 }

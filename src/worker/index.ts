@@ -8,6 +8,7 @@ import {
   siteQueue,
 } from '@/server/sync/queue'
 import { runDailySync } from '@/server/sync/daily-sync'
+import { runHistorySync } from '@/server/sync/history-sync'
 
 /**
  * Veriyi toplayan ayrı süreç.
@@ -23,8 +24,7 @@ const worker = new Worker<SiteJob>(
       case 'daily':
         return runDailySync(job.data)
       case 'history':
-        // Task 13'te geçmiş veri işi eklenecek.
-        throw new Error(`Bilinmeyen iş türü: ${job.name}`)
+        return runHistorySync(job.data)
     }
   },
   {
