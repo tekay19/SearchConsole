@@ -4,6 +4,7 @@ const RANGES: readonly RangeKey[] = ['7d', '28d', '3m']
 
 export const DEFAULT_RANGE: RangeKey = '28d'
 export const ALL_SITES = 'all'
+export const ALL_ACCOUNTS = 'all'
 
 type ParamValue = string | string[] | undefined
 
@@ -19,23 +20,26 @@ const first = (value: ParamValue): string | undefined => (Array.isArray(value) ?
  */
 export function parseDashboardParams(input: Record<string, ParamValue>): {
   siteId: string
+  accountId: string
   range: RangeKey
 } {
   const range = first(input.aralik)
 
   return {
     siteId: first(input.site) ?? ALL_SITES,
+    accountId: first(input.hesap) ?? ALL_ACCOUNTS,
     range: RANGES.includes(range as RangeKey) ? (range as RangeKey) : DEFAULT_RANGE,
   }
 }
 
 export function buildDashboardHref(
   base: string,
-  params: { siteId?: string; range?: RangeKey },
+  params: { siteId?: string; accountId?: string; range?: RangeKey },
 ): string {
   const search = new URLSearchParams()
 
   // Varsayılan değeri adreste taşımak bağlantıyı gereksiz uzatır.
+  if (params.accountId && params.accountId !== ALL_ACCOUNTS) search.set('hesap', params.accountId)
   if (params.siteId && params.siteId !== ALL_SITES) search.set('site', params.siteId)
   if (params.range) search.set('aralik', params.range)
 

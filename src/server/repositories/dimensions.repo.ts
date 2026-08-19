@@ -2,8 +2,8 @@ import { and, between, desc, eq, sql } from 'drizzle-orm'
 import type { PgColumn } from 'drizzle-orm/pg-core'
 import type { Period } from '@/lib/date/period'
 import { db } from '@/server/db'
-import { countryDaily, deviceDaily, pageDaily, queryDaily, sites } from '@/server/db/schema'
-import type { SiteScope } from './metrics-read.repo'
+import { countryDaily, deviceDaily, pageDaily, queryDaily } from '@/server/db/schema'
+import { siteIdsForScope, type SiteScope } from './metrics-read.repo'
 
 export type DimensionKind = 'query' | 'page' | 'country' | 'device'
 
@@ -37,7 +37,7 @@ export const dimensionsRepo = {
     const scopeCondition =
       scope.kind === 'site'
         ? eq(source.siteId, scope.siteId)
-        : sql`${source.siteId} IN (SELECT ${sites.id} FROM ${sites} WHERE ${sites.userId} = ${scope.userId})`
+        : sql`${source.siteId} IN (${siteIdsForScope(scope)})`
 
     const rows = await db
       .select({

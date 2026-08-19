@@ -37,7 +37,8 @@ export const sitesRepo = {
     return row ?? null
   },
 
-  async listForUser(userId: string): Promise<SiteWithState[]> {
+  /** `connectionId` verilirse yalnızca o Google hesabından gelen siteler. */
+  async listForUser(userId: string, connectionId?: string): Promise<SiteWithState[]> {
     return db
       .select({
         id: sites.id,
@@ -55,7 +56,9 @@ export const sitesRepo = {
       })
       .from(sites)
       .innerJoin(siteSyncState, eq(siteSyncState.siteId, sites.id))
-      .where(eq(sites.userId, userId))
+      .where(
+        and(eq(sites.userId, userId), connectionId ? eq(sites.connectionId, connectionId) : undefined),
+      )
       .orderBy(sites.displayName) as Promise<SiteWithState[]>
   },
 

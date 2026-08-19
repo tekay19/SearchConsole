@@ -1,14 +1,32 @@
 import { describe, expect, it } from 'vitest'
-import { ALL_SITES, DEFAULT_RANGE, buildDashboardHref, parseDashboardParams } from './search-params'
+import {
+  ALL_ACCOUNTS,
+  ALL_SITES,
+  DEFAULT_RANGE,
+  buildDashboardHref,
+  parseDashboardParams,
+} from './search-params'
 
 describe('parseDashboardParams', () => {
-  it('varsayılan olarak tüm siteler ve son 28 gün seçilir', () => {
-    expect(parseDashboardParams({})).toEqual({ siteId: ALL_SITES, range: DEFAULT_RANGE })
+  it('varsayılan olarak tüm hesaplar, tüm siteler ve son 28 gün seçilir', () => {
+    expect(parseDashboardParams({})).toEqual({
+      siteId: ALL_SITES,
+      accountId: ALL_ACCOUNTS,
+      range: DEFAULT_RANGE,
+    })
     expect(DEFAULT_RANGE).toBe('28d')
   })
 
   it('geçerli değerleri okur', () => {
-    expect(parseDashboardParams({ site: 'abc', aralik: '7d' })).toEqual({ siteId: 'abc', range: '7d' })
+    expect(parseDashboardParams({ site: 'abc', hesap: 'acc-1', aralik: '7d' })).toEqual({
+      siteId: 'abc',
+      accountId: 'acc-1',
+      range: '7d',
+    })
+  })
+
+  it('hesap seçimini okur', () => {
+    expect(parseDashboardParams({ hesap: 'acc-9' }).accountId).toBe('acc-9')
   })
 
   it('bilinmeyen aralığı varsayılana çevirir', () => {
@@ -33,6 +51,18 @@ describe('buildDashboardHref', () => {
 
   it('site ve aralığı birlikte yazar', () => {
     expect(buildDashboardHref('/sitelerim', { siteId: 'abc', range: '7d' })).toBe('/sitelerim?site=abc&aralik=7d')
+  })
+
+  it('hesabı site ve aralıkla birlikte yazar', () => {
+    expect(buildDashboardHref('/genel-bakis', { accountId: 'acc-1', siteId: 'abc', range: '7d' })).toBe(
+      '/genel-bakis?hesap=acc-1&site=abc&aralik=7d',
+    )
+  })
+
+  it('tüm hesaplar seçiliyken hesap parametresini yazmaz', () => {
+    expect(buildDashboardHref('/genel-bakis', { accountId: ALL_ACCOUNTS, range: '7d' })).toBe(
+      '/genel-bakis?aralik=7d',
+    )
   })
 
   it('hiçbir parametre yoksa düz yol döner', () => {

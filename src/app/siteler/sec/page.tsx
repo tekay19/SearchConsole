@@ -1,8 +1,10 @@
 import Link from 'next/link'
+import { redirect } from 'next/navigation'
 import { SiteSelectionForm } from '@/features/onboarding/site-selection-form'
 import { copy } from '@/lib/copy'
 import { formatCount } from '@/lib/format/number'
 import { requireSession } from '@/server/auth'
+import { accountsService } from '@/server/services/accounts.service'
 import { onboardingService } from '@/server/services/onboarding.service'
 
 /**
@@ -11,14 +13,40 @@ import { onboardingService } from '@/server/services/onboarding.service'
  * Kullanıcı burada Search Console'un "property" kavramını bilmek zorunda
  * değil; yalnızca tanıdığı alan adlarını görüyor.
  */
-export default async function SelectSitesPage() {
+export default async function SelectSitesPage({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>
+}) {
   const session = await requireSession()
-  const sites = await onboardingService.discoverSites(session.userId, session.connectionId)
+  const { hesap } = await searchParams
+
+  /**
+   * Hangi Google hesabının siteleri listelenecek?
+   *
+   * Adres çubuğundan gelen kimlik doğrulanır; kullanıcının olmayan bir
+   * hesap istenirse en güncel kendi hesabına düşer. Oturumdaki
+   * `connectionId` en son bağlanan hesaptır ve hesap ekleme akışından
+   * hemen sonra doğru olan da odur.
+   */
+  const account = await accountsService.resolveForUser(
+    session.userId,
+    typeof hesap === 'string' ? hesap : session.connectionId,
+  )
+
+  if (!account) redirect('/baglan')
+
+  const sites = await onboardingService.discoverSites(session.userId, account.id)
 
   return (
     <main className="mx-auto flex min-h-dvh max-w-xl flex-col justify-center px-6 py-16">
       <p className="font-display text-sm font-semibold tracking-widest text-rise uppercase">
         {copy.onboarding.connectedTitle}
+      </p>
+
+      <p className="mt-2 text-sm text-ink-muted">
+        {copy.accounts.sourceAccount}
+        <span className="ml-1.5 font-medium text-ink break-all">{account.googleEmail}</span>
       </p>
 
       <h1 className="mt-4 font-display text-3xl leading-tight font-semibold tracking-tight text-balance">

@@ -91,6 +91,15 @@ export const tr = {
     },
   },
 
+  accounts: {
+    pickerLabel: 'Google hesabı seçin',
+    all: 'Tüm Hesaplar',
+    addAccount: '+ Google Hesabı Ekle',
+    siteCount: (count: string) => `${count} site`,
+    needsReconnect: 'yenilenmeli',
+    sourceAccount: 'Siteleri getirilecek hesap',
+  },
+
   settings: {
     accountHeading: 'Hesabınız',
     connectionHeading: 'Google bağlantınız',

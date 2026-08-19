@@ -1,8 +1,10 @@
 import Link from 'next/link'
 import { PageHeader } from '@/components/app-shell/page-header'
-import { removeTrackedSite, signOutAction } from '@/features/settings/actions'
+import { addGoogleAccount, removeTrackedSite, signOutAction } from '@/features/settings/actions'
+import { AddAccountButton } from '@/features/settings/add-account-button'
 import { StatusBadge } from '@/features/sites/status-badge'
 import { copy } from '@/lib/copy'
+import { formatCount } from '@/lib/format/number'
 import { formatLastUpdate } from '@/lib/format/time'
 import { requireSession } from '@/server/auth'
 import { settingsService } from '@/server/services/settings.service'
@@ -35,36 +37,39 @@ export default async function SettingsPage() {
 
       <div className="grid max-w-2xl gap-5">
         <Card title={copy.settings.connectionHeading}>
-          {settings.connection === null ? (
+          {settings.accounts.length === 0 ? (
             <p className="text-sm text-ink-muted">{copy.settings.noConnection}</p>
           ) : (
-            <>
-              <dl className="divide-y divide-rule">
-                <Row label={copy.settings.connectedAs} value={settings.connection.googleEmail} />
-                <Row
-                  label={copy.settings.connectedSince}
-                  value={formatLastUpdate(settings.connection.connectedAt, new Date())}
-                />
-              </dl>
+            <ul className="divide-y divide-rule">
+              {settings.accounts.map((account) => (
+                <li key={account.id} className="flex flex-wrap items-center justify-between gap-3 py-3">
+                  <div className="min-w-0">
+                    <p className="text-sm font-medium break-all">{account.googleEmail}</p>
+                    <p className="mt-1 text-xs text-ink-faint">
+                      {copy.accounts.siteCount(formatCount(account.siteCount))}
+                      <span className="mx-1.5">·</span>
+                      {formatLastUpdate(account.connectedAt, new Date())}
+                    </p>
+                  </div>
 
-              <p
-                className={`mt-4 text-sm font-medium ${
-                  settings.connection.isActive ? 'text-rise' : 'text-fall'
-                }`}
-              >
-                {settings.connection.isActive
-                  ? copy.settings.connectionActive
-                  : copy.settings.connectionBroken}
-              </p>
-
-              <Link
-                href="/baglan"
-                className="mt-4 inline-block rounded-lg bg-cobalt-soft px-4 py-2 text-sm font-medium text-cobalt hover:underline"
-              >
-                {copy.settings.reconnect}
-              </Link>
-            </>
+                  {account.isActive ? (
+                    <span className="text-xs font-medium text-rise">{copy.settings.connectionActive}</span>
+                  ) : (
+                    <Link
+                      href="/baglan"
+                      className="rounded-lg bg-cobalt-soft px-3 py-1.5 text-xs font-medium text-cobalt hover:underline"
+                    >
+                      {copy.settings.reconnect}
+                    </Link>
+                  )}
+                </li>
+              ))}
+            </ul>
           )}
+
+          <div className="mt-4 border-t border-rule pt-4">
+            <AddAccountButton action={addGoogleAccount} />
+          </div>
         </Card>
 
         <Card title={copy.settings.sitesHeading}>
@@ -76,6 +81,7 @@ export default async function SettingsPage() {
                 <li key={site.id} className="flex flex-wrap items-center justify-between gap-3 py-3">
                   <div>
                     <p className="text-sm font-medium break-all">{site.displayName}</p>
+                    <p className="mt-0.5 text-xs text-ink-faint break-all">{site.accountEmail}</p>
                     <div className="mt-1">
                       <StatusBadge view={site.status} />
                     </div>

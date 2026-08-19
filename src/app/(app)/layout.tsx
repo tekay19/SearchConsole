@@ -1,9 +1,13 @@
 import { Suspense } from 'react'
 import Link from 'next/link'
+import { AccountPicker } from '@/components/app-shell/account-picker'
 import { Sidebar } from '@/components/app-shell/sidebar'
 import { SitePicker } from '@/components/filters/site-picker'
+import { AddAccountButton } from '@/features/settings/add-account-button'
+import { addGoogleAccount } from '@/features/settings/actions'
 import { copy } from '@/lib/copy'
 import { requireSession } from '@/server/auth'
+import { accountsService } from '@/server/services/accounts.service'
 import { sitesService } from '@/server/services/sites.service'
 
 /**
@@ -12,16 +16,33 @@ import { sitesService } from '@/server/services/sites.service'
  */
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
   const session = await requireSession()
-  const sites = await sitesService.listOptions(session.userId)
+
+  const [accounts, sites] = await Promise.all([
+    accountsService.listForUser(session.userId),
+    sitesService.listOptions(session.userId),
+  ])
 
   return (
     <div className="mx-auto flex min-h-dvh w-full max-w-[1400px] flex-col lg:flex-row">
-      <aside className="shrink-0 border-b border-rule px-6 py-5 lg:w-56 lg:border-r lg:border-b-0 lg:py-8">
-        <Link href="/genel-bakis" className="block font-display text-base font-semibold tracking-tight">
+      <aside className="shrink-0 border-b border-rule px-5 py-5 lg:w-64 lg:border-r lg:border-b-0 lg:py-7">
+        <Link
+          href="/genel-bakis"
+          className="block font-display text-sm font-semibold tracking-tight text-ink-faint"
+        >
           {copy.app.name}
         </Link>
 
-        <div className="mt-7">
+        <div className="mt-3">
+          <Suspense>
+            <AccountPicker accounts={accounts} />
+          </Suspense>
+        </div>
+
+        <div className="mt-2">
+          <AddAccountButton action={addGoogleAccount} className="text-xs font-medium text-cobalt hover:underline" />
+        </div>
+
+        <div className="mt-6">
           <Suspense>
             <Sidebar />
           </Suspense>

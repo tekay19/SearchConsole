@@ -5,7 +5,7 @@ import { metricsReadRepo } from '@/server/repositories/metrics-read.repo'
 import { sitesRepo } from '@/server/repositories/sites.repo'
 import { deriveSiteStatus, type SiteStatusView } from './site-status'
 
-export type SiteOption = { id: string; displayName: string }
+export type SiteOption = { id: string; displayName: string; accountId: string }
 
 export type SiteSummary = {
   id: string
@@ -22,10 +22,21 @@ export type SiteSummary = {
 const EMPTY_TOTALS: Totals = { clicks: 0, impressions: 0, clickRate: null, rank: null }
 
 export const sitesService = {
-  /** Site seçicinin ihtiyaç duyduğu asgari liste. */
-  async listOptions(userId: string): Promise<SiteOption[]> {
-    const sites = await sitesRepo.listForUser(userId)
-    return sites.map((site) => ({ id: site.id, displayName: site.displayName }))
+  /**
+   * Site seçicinin listesi.
+   *
+   * Hesap kimliği her satırda taşınıyor: kabuk bir layout ve Next.js
+   * layout'lara adres çubuğu parametrelerini vermiyor, dolayısıyla hesap
+   * süzgecini seçicinin kendisi uyguluyor.
+   */
+  async listOptions(userId: string, connectionId?: string): Promise<SiteOption[]> {
+    const sites = await sitesRepo.listForUser(userId, connectionId)
+
+    return sites.map((site) => ({
+      id: site.id,
+      displayName: site.displayName,
+      accountId: site.connectionId,
+    }))
   },
 
   /**
@@ -37,11 +48,17 @@ export const sitesService = {
    * Verisi olmayan site listeden düşmez — yeni eklenmiş bir site
    * görünmezse kullanıcı "eklendi mi eklenmedi mi" diye düşünür.
    */
-  async listSummaries(userId: string, period: Period, now = new Date()): Promise<SiteSummary[]> {
+  async listSummaries(
+    userId: string,
+    period: Period,
+    options: { connectionId?: string; now?: Date } = {},
+  ): Promise<SiteSummary[]> {
+    const { connectionId, now = new Date() } = options
+
     const [sites, current, previous] = await Promise.all([
-      sitesRepo.listForUser(userId),
-      metricsReadRepo.totalsForMany(userId, period),
-      metricsReadRepo.totalsForMany(userId, previousPeriod(period)),
+      sitesRepo.listForUser(userId, connectionId),
+      metricsReadRepo.totalsForMany(userId, period, connectionId),
+      metricsReadRepo.totalsForMany(userId, previousPeriod(period), connectionId),
     ])
 
     return sites.map((site) => {

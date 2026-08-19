@@ -4,6 +4,7 @@ import { connectionsRepo } from '@/server/repositories/connections.repo'
 import { usersRepo } from '@/server/repositories/users.repo'
 import { authConfig } from './config'
 import { encryptSecret } from './crypto'
+import { consumeAccountLink } from './link-intent'
 
 declare module 'next-auth' {
   interface Session {
@@ -38,23 +39,39 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     async jwt({ token, account, profile }) {
       if (!account || !profile?.email) return token
 
-      if (!account.refresh_token) {
-        // access_type=offline + prompt=consent varken buraya düşmemeli.
-        // Düşerse arka plan toplama çalışmaz; sessizce devam etmek yerine duruyoruz.
-        throw new Error('Google yenileme jetonu göndermedi; bağlantı kaydedilmedi.')
-      }
+      /**
+       * İki farklı akış aynı yerden geçiyor:
+       *
+       * - Normal giriş: kullanıcı Google e-postasından bulunur veya açılır.
+       * - Hesap ekleme: kullanıcı zaten var, yeni Google hesabı ona bağlanır.
+       *
+       * Ayrım olmasaydı ikinci bir Google hesabıyla giriş yapmak yeni bir
+       * kullanıcı açardı ve kişinin siteleri iki ayrı panele bölünürdü.
+       */
+      const linkedUserId = await consumeAccountLink()
 
-      const user = await usersRepo.upsertByEmail({
-        email: profile.email,
-        name: typeof profile.name === 'string' ? profile.name : null,
-      })
+      const user = linkedUserId
+        ? { id: linkedUserId }
+        : await usersRepo.upsertByEmail({
+            email: profile.email,
+            name: typeof profile.name === 'string' ? profile.name : null,
+          })
 
+      /**
+       * Google yenileme jetonunu yalnızca izin ekranından geçen akışta
+       * gönderir. Normal girişte gelmemesi beklenen durumdur — kayıtlı
+       * olan zaten duruyor ve arka plan onunla çalışıyor.
+       *
+       * Bu yüzden gelmediğinde hata vermiyoruz; kaydı ezmiyoruz.
+       * Yalnızca hiç kaydı olmayan yepyeni bir bağlantı jetonsuz gelirse
+       * duruyoruz: o bağlantı hiçbir zaman veri toplayamazdı.
+       */
       const connection = await connectionsRepo.upsertFromGoogle({
         userId: user.id,
         googleSub: String(account.providerAccountId),
         googleEmail: profile.email,
         accessTokenEncrypted: encryptSecret(account.access_token ?? ''),
-        refreshTokenEncrypted: encryptSecret(account.refresh_token),
+        refreshTokenEncrypted: account.refresh_token ? encryptSecret(account.refresh_token) : null,
         accessTokenExpiresAt: new Date((account.expires_at ?? 0) * 1000),
       })
 

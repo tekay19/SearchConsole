@@ -1,6 +1,7 @@
 import { ConnectButton } from '@/features/onboarding/connect-button'
 import { RankLadder } from '@/features/onboarding/rank-ladder'
 import { copy } from '@/lib/copy'
+import { startSignIn } from '@/server/auth/flows'
 
 /**
  * Sistemi ilk kez açan kişinin gördüğü tek ekran.
@@ -34,7 +35,7 @@ export default async function ConnectPage({
           ) : null}
 
           <div className="mt-9">
-            <ConnectButton />
+            <ConnectButton action={startSignIn} />
           </div>
 
           <p className="mt-4 text-sm leading-relaxed text-ink-faint">{copy.onboarding.connectNote}</p>

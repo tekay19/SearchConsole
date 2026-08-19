@@ -4,8 +4,19 @@ import type { Totals } from '@/lib/metrics/aggregate'
 import { db } from '@/server/db'
 import { dailyTotals, sites } from '@/server/db/schema'
 
-/** Tek site mi, kullanıcının tüm siteleri mi. */
-export type SiteScope = { kind: 'all'; userId: string } | { kind: 'site'; siteId: string }
+/**
+ * Neye bakıyoruz:
+ *
+ * - `site`  : tek bir web sitesi
+ * - `all`   : kullanıcının siteleri; `connectionId` verilirse yalnızca o
+ *             Google hesabından gelenler
+ *
+ * Bir kişi birden çok Google hesabı bağlayabildiği için "tüm siteler"
+ * ile "bu hesabın siteleri" ayrı iki sorudur.
+ */
+export type SiteScope =
+  | { kind: 'all'; userId: string; connectionId?: string | undefined }
+  | { kind: 'site'; siteId: string }
 
 export type DailyPoint = { date: string; clicks: number; impressions: number }
 
@@ -14,10 +25,21 @@ export type DailyPoint = { date: string; clicks: number; impressions: number }
  * tanımlanmaz. Katman kuralı tek yönlüdür: sunucu lib'i import edebilir,
  * lib sunucuyu edemez.
  */
+/**
+ * Kapsam koşulunu SQL'e çevirir. Tek yerde durması önemli: aynı filtre
+ * beş tabloda kullanılıyor ve birinde unutulan hesap filtresi kullanıcıya
+ * başka hesabının verisini gösterirdi.
+ */
+export function siteIdsForScope(scope: Extract<SiteScope, { kind: 'all' }>) {
+  return sql`SELECT ${sites.id} FROM ${sites} WHERE ${sites.userId} = ${scope.userId}${
+    scope.connectionId ? sql` AND ${sites.connectionId} = ${scope.connectionId}` : sql``
+  }`
+}
+
 const scopeCondition = (scope: SiteScope) =>
   scope.kind === 'site'
     ? eq(dailyTotals.siteId, scope.siteId)
-    : sql`${dailyTotals.siteId} IN (SELECT ${sites.id} FROM ${sites} WHERE ${sites.userId} = ${scope.userId})`
+    : sql`${dailyTotals.siteId} IN (${siteIdsForScope(scope)})`
 
 export const metricsReadRepo = {
   /**
@@ -67,7 +89,11 @@ export const metricsReadRepo = {
    * Kullanıcının tüm siteleri için toplam — site başına ayrı sorgu değil,
    * tek sorgu. 50 siteli bir kullanıcıda 100 sorgu yerine 2 sorgu çalışır.
    */
-  async totalsForMany(userId: string, period: Period): Promise<Map<string, Totals>> {
+  async totalsForMany(
+    userId: string,
+    period: Period,
+    connectionId?: string,
+  ): Promise<Map<string, Totals>> {
     const rows = await db
       .select({
         siteId: dailyTotals.siteId,
@@ -77,7 +103,13 @@ export const metricsReadRepo = {
       })
       .from(dailyTotals)
       .innerJoin(sites, eq(sites.id, dailyTotals.siteId))
-      .where(and(eq(sites.userId, userId), between(dailyTotals.date, period.from, period.to)))
+      .where(
+        and(
+          eq(sites.userId, userId),
+          connectionId ? eq(sites.connectionId, connectionId) : undefined,
+          between(dailyTotals.date, period.from, period.to),
+        ),
+      )
       .groupBy(dailyTotals.siteId)
 
     return new Map(
