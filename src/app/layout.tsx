@@ -1,19 +1,29 @@
 import type { Metadata } from 'next'
-import { Geist, Geist_Mono } from 'next/font/google'
+import { Bricolage_Grotesque, Public_Sans } from 'next/font/google'
 import { copy } from '@/lib/copy'
 import './globals.css'
 
-const geistSans = Geist({
-  variable: '--font-geist-sans',
-  subsets: ['latin'],
+/**
+ * İki yazı tipi, iki iş.
+ *
+ * Bricolage Grotesque yalnızca başlıklarda ve büyük sayılarda: sıkı, hafif
+ * daralmış, karakterli bir grotesk. Panelin kimliğini o taşıyor.
+ *
+ * Public Sans geri kalan her şeyde: okunurluğu tartışmasız, tablo rakamları
+ * hizalı. latin-ext alt kümesi Türkçe harfler (ğ, ş, ı, İ) için zorunlu.
+ */
+const display = Bricolage_Grotesque({
+  variable: '--font-bricolage',
+  subsets: ['latin', 'latin-ext'],
+  display: 'swap',
 })
 
-const geistMono = Geist_Mono({
-  variable: '--font-geist-mono',
-  subsets: ['latin'],
+const sans = Public_Sans({
+  variable: '--font-public-sans',
+  subsets: ['latin', 'latin-ext'],
+  display: 'swap',
 })
 
-// Sekme başlığı da kullanıcıya görünen metindir; sözlükten gelir.
 export const metadata: Metadata = {
   title: copy.app.name,
   description: copy.app.tagline,
@@ -21,11 +31,8 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html
-      lang="tr"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
-    >
-      <body className="min-h-full flex flex-col">{children}</body>
+    <html lang="tr" className={`${display.variable} ${sans.variable} h-full`}>
+      <body className="min-h-full">{children}</body>
     </html>
   )
 }

@@ -44,6 +44,17 @@ export const tr = {
     },
   },
 
+  onboarding: {
+    ladderCaption: 'Sizin siteniz',
+    headline: 'Google’da kaçıncı sıradasınız?',
+    subhead:
+      'Sitelerinizin Google aramalarında nerede çıktığını, kaç kişinin tıkladığını ve bunun her hafta nasıl değiştiğini tek ekrandan görün.',
+    connectAction: "Google Search Console'u Bağla",
+    connectNote: 'Google hesabınızdan yalnızca Search Console performans verileri okunur.',
+    connectFailed: 'Bağlantı tamamlanamadı. Lütfen tekrar deneyin.',
+    accessDenied: 'Google izni verilmedi. Verilerinizi görebilmemiz için izin vermeniz gerekiyor.',
+  },
+
   status: {
     fresh: 'Güncel',
     syncing: 'Veri alınıyor',

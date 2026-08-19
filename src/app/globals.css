@@ -1,26 +1,107 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
+/**
+ * Tasarım belirteçleri.
+ *
+ * Renk kararı konudan geliyor: bu ürünün ölçtüğü şey Google'daki bir bağlantı.
+ * Vurgu rengi de o bağlantının rengi — kobalt. Yükseliş ve düşüş için klasik
+ * yeşil/kırmızı yerine derin çam ve tuğla kullanılıyor; ikisi renk körlüğünde
+ * de ayırt edilebilecek kadar farklı açıklıkta.
+ */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+  --paper: #f6f7f5;
+  --paper-raised: #ffffff;
+  --ink: #14201c;
+  --ink-muted: #5f6f68;
+  --ink-faint: #8c9a94;
+  --rule: #dfe4e0;
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --cobalt: #2b4cf2;
+  --cobalt-soft: #e8ecfe;
+  --rise: #0e7c66;
+  --fall: #b03a48;
+
+  --radius: 10px;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --paper: #0e1614;
+    --paper-raised: #16211e;
+    --ink: #eef2f0;
+    --ink-muted: #9aa9a3;
+    --ink-faint: #6d7b76;
+    --rule: #253430;
+
+    --cobalt: #7b91ff;
+    --cobalt-soft: #1b2547;
+    --rise: #4bbfa2;
+    --fall: #e08492;
   }
 }
 
+@theme inline {
+  --color-paper: var(--paper);
+  --color-paper-raised: var(--paper-raised);
+  --color-ink: var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --color-ink-faint: var(--ink-faint);
+  --color-rule: var(--rule);
+  --color-cobalt: var(--cobalt);
+  --color-cobalt-soft: var(--cobalt-soft);
+  --color-rise: var(--rise);
+  --color-fall: var(--fall);
+
+  --font-display: var(--font-bricolage), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-public-sans), ui-sans-serif, system-ui, sans-serif;
+}
+
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  /* Panelde sayılar alt alta hizalansın; sütunlar zıplamasın. */
+  font-variant-numeric: tabular-nums;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Klavyeyle gezen herkes nerede olduğunu görmeli. */
+:focus-visible {
+  outline: 2px solid var(--cobalt);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/**
+ * Sıralama merdiveni: satırlar başlangıç sıralarında duruyor, kısa bir
+ * beklemeden sonra hepsi yeni sıralarına kayıyor. Tek bir zaman çizgisi;
+ * dağınık efekt yok.
+ */
+.rank-row {
+  transform: translateY(var(--from));
+  animation: rank-settle 900ms cubic-bezier(0.22, 1, 0.36, 1) 700ms forwards;
+}
+
+@keyframes rank-settle {
+  to {
+    transform: translateY(var(--to));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* Hareket kapalıysa son durumu doğrudan göster. */
+  .rank-row {
+    transform: translateY(var(--to));
+    animation: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
