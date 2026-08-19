@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
+import { copy } from '@/lib/copy'
 import './globals.css'
 
 const geistSans = Geist({
@@ -12,10 +13,10 @@ const geistMono = Geist_Mono({
   subsets: ['latin'],
 })
 
-// Task 3'te copy sözlüğü eklendiğinde buradaki metinler oradan okunacak.
+// Sekme başlığı da kullanıcıya görünen metindir; sözlükten gelir.
 export const metadata: Metadata = {
-  title: 'Search Performance',
-  description: 'Web sitelerinizin Google performansını tek ekrandan takip edin.',
+  title: copy.app.name,
+  description: copy.app.tagline,
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
