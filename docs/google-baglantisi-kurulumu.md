@@ -40,15 +40,20 @@ Bu adım atlanırsa site listesi çekilirken izin hatası alınır.
 **OAuth client ID**
 
 - **Application type:** Web application
-- **Name:** Search Performance (yerel)
+- **Name:** Search Performance (yerel) — bu ad yalnızca konsolda görünür.
+- **Authorized JavaScript origins:** boş bırak. Bu alan tarayıcıdan doğrudan
+  Google'a istek atan uygulamalar içindir; bizim giriş akışımız sunucu
+  tarafında döner.
 - **Authorized redirect URIs** → **ADD URI**:
 
   ```
   http://localhost:3000/api/auth/callback/google
   ```
 
-  Bu adres birebir aynı olmalı; sonunda eğik çizgi olmamalı. Yanlışsa giriş
-  sırasında `redirect_uri_mismatch` hatası alınır.
+  Üç ayrıntı önemli: `https` değil **`http`** (Google `localhost` için bu
+  istisnayı tanır), sonunda **eğik çizgi yok**, ve yol **birebir**
+  `/api/auth/callback/google`. Bir harf farklı olursa girişte
+  `redirect_uri_mismatch` hatası alınır.
 
 **Create** dedikten sonra açılan kutuda **Client ID** ve **Client secret**
 görünür. İkisini de kopyala.
