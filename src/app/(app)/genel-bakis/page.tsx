@@ -1,5 +1,6 @@
 import { PageHeader } from '@/components/app-shell/page-header'
 import { KpiRow } from '@/components/metrics/kpi-row'
+import { PerformanceChart } from '@/components/metrics/performance-chart'
 import { copy } from '@/lib/copy'
 import { resolvePeriod } from '@/lib/date/period'
 import { ALL_SITES, parseDashboardParams } from '@/lib/url/search-params'
@@ -31,6 +32,7 @@ export default async function OverviewPage({
     <>
       <PageHeader title={copy.nav.overview} />
       <KpiRow overview={overview} />
+      <PerformanceChart points={overview.series} />
     </>
   )
 }

@@ -66,6 +66,12 @@ export const tr = {
     },
   },
 
+  chart: {
+    title: 'Google Performansı',
+    empty: 'Bu dönem için henüz veri yok.',
+    seriesLabel: 'Gösterilecek ölçü',
+  },
+
   delta: {
     increased: 'Geçen döneme göre arttı',
     decreased: 'Geçen döneme göre azaldı',
