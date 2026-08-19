@@ -12,6 +12,13 @@ export const preparationStage = pgEnum('preparation_stage', [
   'ready',
 ])
 
+/**
+ * Bu iki tip enum'un kendisinden türer. Elle yazılmış bir birleşim,
+ * şemaya yeni bir değer eklendiği gün sessizce eskirdi.
+ */
+export type SiteStatus = (typeof siteStatus.enumValues)[number]
+export type PreparationStage = (typeof preparationStage.enumValues)[number]
+
 export const users = pgTable('users', {
   id: uuid('id').primaryKey().defaultRandom(),
   email: text('email').notNull().unique(),

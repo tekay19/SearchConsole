@@ -1,5 +1,6 @@
-export type SiteStatus = 'fresh' | 'syncing' | 'needs_reconnect' | 'failed'
-export type PreparationStage = 'connecting' | 'discovering' | 'fetching_history' | 'ready'
+import type { PreparationStage, SiteStatus } from '@/server/db/schema'
+
+export type { PreparationStage, SiteStatus }
 
 export type SiteStatusView = {
   status: SiteStatus
