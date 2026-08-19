@@ -78,6 +78,21 @@ export const tr = {
     },
   },
 
+  sites: {
+    addAction: 'Site Ekle',
+    searchPlaceholder: 'Web sitesi arayın',
+    searchLabel: 'Web sitelerinde ara',
+    detailAction: 'Detayları Gör',
+    lastData: 'Son veri:',
+    neverSynced: 'Henüz veri alınmadı',
+    viewCards: 'Kartlar',
+    viewTable: 'Tablo',
+    viewLabel: 'Görünüm',
+    empty: 'Henüz takip ettiğiniz bir web sitesi yok.',
+    emptyAction: 'Web sitesi ekleyin',
+    noMatch: 'Aramanıza uyan web sitesi yok.',
+  },
+
   chart: {
     title: 'Google Performansı',
     empty: 'Bu dönem için henüz veri yok.',
