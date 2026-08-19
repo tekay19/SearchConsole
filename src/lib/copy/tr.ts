@@ -55,6 +55,27 @@ export const tr = {
     accessDenied: 'Google izni verilmedi. Verilerinizi görebilmemiz için izin vermeniz gerekiyor.',
   },
 
+  filters: {
+    allSites: 'Tüm Siteler',
+    sitePickerLabel: 'Web sitesi seçin',
+    rangeLabel: 'Tarih aralığı',
+    ranges: {
+      '7d': 'Son 7 Gün',
+      '28d': 'Son 28 Gün',
+      '3m': 'Son 3 Ay',
+    },
+  },
+
+  /** Bir kez burada tanımlanır; sonraki bölümler yalnızca satır ekler. */
+  common: {
+    noData: '—',
+    helpLabel: 'Bu nedir?',
+    other: 'Diğer',
+    comingSoon: 'Bu bölüm yakında kullanıma açılacak.',
+    signOut: 'Çıkış Yap',
+    mainNavLabel: 'Ana menü',
+  },
+
   /**
    * Durum özeti cümleleri. Sayı biçimlendirmesi çağıran tarafta yapılır;
    * buraya hazır metin gelir.
